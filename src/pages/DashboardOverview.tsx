@@ -263,21 +263,24 @@ export default function DashboardOverview() {
               </div>
             </div>
           )}
-          {activeFilters > 0 && (
-            <button
-              onClick={() => { setFilterSeverity(null); setFilterKategorie(null); setSearch(''); }}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <IconX size={12} stroke={1.5} />
-              Filter zurücksetzen ({activeFilters})
-            </button>
-          )}
+          <button
+            onClick={() => { setFilterSeverity(null); setFilterKategorie(null); setSearch(''); }}
+            disabled={activeFilters === 0 && !search.trim()}
+            className={`flex items-center gap-1 text-xs transition-colors ${
+              activeFilters > 0 || search.trim()
+                ? 'text-primary hover:text-primary/80'
+                : 'text-muted-foreground/40 cursor-not-allowed'
+            }`}
+          >
+            <IconX size={12} stroke={1.5} />
+            Filter zurücksetzen{activeFilters > 0 ? ` (${activeFilters})` : ''}
+          </button>
         </div>
       </div>
 
       {/* Kanban groups by severity */}
       <div className="space-y-5">
-        {SEVERITY_ORDER.map(severityKey => {
+        {(filterSeverity ? [filterSeverity] : SEVERITY_ORDER).map(severityKey => {
           const items = grouped[severityKey] ?? [];
           const cfg = SEVERITY_CONFIG[severityKey];
           return (
